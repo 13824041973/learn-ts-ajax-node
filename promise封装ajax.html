@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script>
+    // ES6使用Promise封装ajax
+    function getJson(url) {
+      return new Promise((resolve, reject) => {
+        // 创建一个实例对象
+        let xhr = new XMLHttpRequest();
+        // 新建一个HTTP请求
+        xhr.open("GET", url, true);
+        // 发送http请求
+        xhr.send(null);
+        // 设置状态监听函数
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState !== 4) return; //表示请求成功
+          //当请求成功或者失败时，改变promise实例状态
+          if (xhr.status >= 200 && xhr.status < 300) {
+            resolve(xhr.response); //请求结果
+          } else {
+            reject(new Error(xhr.statusText));
+          }
+        };
+        // 设置错误的监听函数
+        xhr.onerror = function () {
+          reject(new Error(xhr.statusText));
+        };
+        // 设置响应数据的类型 (不然 xhr.response 就要变为 xhr.responseText) log打印出来的内容需要 JSON.parse(res)
+        xhr.responseType = "json";
+      });
+    }
+    getJson("http://api.test-cluster.fandow.com/erp/ship/b2b-ship")
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  </script>
+</html>
